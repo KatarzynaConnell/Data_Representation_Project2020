@@ -14,7 +14,7 @@ nextId=4
 
 @app.route('/')
 def index():
-    return "hello"
+    return "hello test for pythonanywhere"
 
 # command to get all the stock
 @app.route('/stock')
