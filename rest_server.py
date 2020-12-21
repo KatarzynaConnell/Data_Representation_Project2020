@@ -33,6 +33,7 @@ def findById(id):
     return "served by find by id with it "+ str(id)
 
 # create stock with POST
+#curl -X POST -d "{\"Product\":\"test\", \"Quantity\":89, \"Price\":123}" http://127.0.0.1:5000/stock
 @app.route('/stock', methods=['POST'])
 def create():
     # pull id
@@ -41,6 +42,7 @@ def create():
     if not request.json:
         abort(400) 
 #create new stock item
+
     stockItem = {
         "id": nextId,
         "Product": request.json["Product"],
@@ -51,15 +53,37 @@ def create():
     nextId += 1
     return jsonify(stockItem)
 
-#update
+# update
+# curl -X PUT -d "{\"Product\":\"White wine\", \"Price\":66}" -H "content-type:application/json" http://127.0.0.1:5000/stock/1
 @app.route('/stock/<int:id>', methods=['PUT'])  
 def update(id):
-    return "served by update with it "+ str(id)
+        #to update the stock with the new info
+    foundStock = list(filter (lambda t : t["id"]== id, stock))
+    # add user error to be displayed
+    if len(foundStock) == 0:
+        return jsonify({}), 404
+    currentStock = foundStock[0]
+    if 'Product' in request.json:
+        currentStock['Product'] = request.json['Product']
+    if 'Quantity' in request.json:
+        currentStock['Quantity'] = request.json['Quantity']
+    if 'Price' in request.json:
+        currentStock['Price'] = request.json['Price']
 
-#delete
+    return jsonify(currentStock)
+
+# delete
+# curl -X "DELETE" http://127.0.0.1:5000/stock
 @app.route('/stock/<int:id>', methods=['DELETE'])  
 def delete(id):
-    return "served by delete with it "+ str(id)
+    foundStock = list(filter (lambda t : t["id"]== id, stock))
+    # add user error to be displayed
+    if len(foundStock) == 0:
+        return jsonify({}), 404
+    stock.remove(foundStock[0])
+
+    return jsonify({"done":True})
+
 
 
 if __name__ == "__main__":
