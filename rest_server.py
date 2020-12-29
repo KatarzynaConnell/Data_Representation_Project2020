@@ -60,9 +60,7 @@ def delete(id):
     stockDao.delete(id)
     return jsonify({"done":True})
 
-
-
-if __name__ == "__main__":
+if __name__ == "__main__":  
     app.run(debug=True)
 
 
